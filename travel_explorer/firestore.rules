@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /places/{id} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth.uid == resource.data.authorId;
+    }
+    match /comments/{id} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow delete: if request.auth.uid == resource.data.authorId;
+    }
+    match /guides/{id} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth.uid == resource.data.userId;
+    }
+    match /bookings/{id} {
+      allow read: if request.auth.uid == resource.data.touristId || request.auth.uid == resource.data.guideId;
+      allow create: if request.auth != null;
+      allow update: if request.auth.uid == resource.data.guideId;
+    }
+  }
+}
